@@ -4,3 +4,6 @@ cx_freeze
 requests
 dnspython
 mitmproxy
+appdirs>=1.4.4
+keyring>=23.0.0
+packaging>=21.0.0
