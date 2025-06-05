@@ -5,7 +5,7 @@ from main import CURRENT_VERSION
 build_exe_options = {
     "build_exe": "dist/steamdl", # Output directory relative to setup.py
     "include_files": ["assets", "MicrosoftEdgeWebview2Setup.exe"],
-    "excludes": ["tkinter", "PyQt5", "webview.platforms.android", "webview.platforms.cocoa", "mitmproxy.addons.proxyauth","mitmproxy.tools.web","setuptools"],
+    "excludes": ["tkinter", "PyQt5", "webview.platforms.android", "webview.platforms.cocoa","mitmproxy.tools.web","setuptools"],
     "includes": ["mitmproxy_windows", "appdirs", "keyring", "packaging"], # Added appdirs, keyring, packaging
     "include_msvcr": True,
     "replace_paths": [("*", "")] # This might strip too much path info, test carefully
