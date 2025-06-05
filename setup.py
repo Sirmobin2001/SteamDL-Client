@@ -1,5 +1,6 @@
+import sys # Add this line
 from cx_Freeze import setup, Executable
-from main import CURRENT_VERSION # Make sure main.py can be imported (e.g. no code outside if __name__ == '__main__' that runs on import)
+from main import CURRENT_VERSION 
 
 build_exe_options = {
     "build_exe": "dist/steamdl", # Output directory relative to setup.py
