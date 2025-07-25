@@ -22,10 +22,22 @@ function adjustWidth(element) {
     element.style.width = width + 'px';
 }
 
-function check_traffic()
+function update_info()
 {
   pywebview.api.get_rx().then(function(rx) {
     $("#used_traffic").text(formatBytes(rx));
+  });
+
+  pywebview.api.get_speed().then(function(speed) {
+      $("#speed").text(formatBytes(speed) + '/ثانیه');
+  });
+
+  pywebview.api.get_connections().then(function(connections) {
+      var connections_list = $("#connections_list");
+      connections_list.empty();
+      connections.forEach(function(conn) {
+          connections_list.append('<li>' + conn + '</li>');
+      });
   });
 }
 
@@ -74,8 +86,8 @@ window.addEventListener('pywebviewready', function()
     }
   });
 
-  check_traffic();
-  check_traffic = setInterval(check_traffic, 2001);
+  update_info();
+  setInterval(update_info, 2001);
 
   status_translation = {"active": "فعال", "expired": "منقضی شده"};
   pywebview.api.get_user_data().then(function(user_data) {
@@ -162,5 +174,3 @@ window.addEventListener('pywebviewready', function()
   });
 
 })
-
-
