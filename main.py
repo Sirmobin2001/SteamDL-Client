@@ -14,7 +14,7 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-CURRENT_VERSION = "2.2.12"
+CURRENT_VERSION = "2.2.13"
 WINDOW_TITLE = f"SteamDL v{CURRENT_VERSION}"
 REPO_PATH = "lostact/SteamDL-Client"
 
@@ -28,6 +28,7 @@ INDEX_PATH = resource_path('assets\\web\\index.html')
 FORM_PATH = resource_path('assets\\web\\form.html')
 UPDATE_PATH = resource_path('assets\\web\\update.html')
 PREFERENCES_PATH = resource_path('preferences.json')
+CONNECTIONS_LOG_PATH = resource_path('connections.log')
 
 SEARCH_IP_BYTES = socket.inet_aton("127.0.0.1")
 ANTI_SANCTION_TEST_DOMAIN = "www.epicgames.com"
@@ -212,6 +213,9 @@ class Api:
         self._dns_backup = []
         self._preferences = {"auto_connect": False, "dns_server": "automatic", "update": "latest"}
         self.load_preferences()
+
+        self.last_rx_bytes = 0
+        self.last_rx_time = 0
 
 
     def load_preferences(self):
@@ -579,6 +583,29 @@ class Api:
         except Exception as e:
             logging.error(f"Failed to read rx: {e}")
         return 0
+        
+    def get_connections(self):
+        connections = []
+        if os.path.exists(CONNECTIONS_LOG_PATH):
+            with open(CONNECTIONS_LOG_PATH, "r") as f:
+                connections = [line.strip() for line in f.readlines()]
+        return connections
+
+    def get_speed(self):
+        current_time = time.time()
+        current_rx_bytes = self.get_rx()
+        
+        time_diff = current_time - self.last_rx_time
+        if time_diff == 0:
+            return 0
+
+        rx_diff = current_rx_bytes - self.last_rx_bytes
+        speed = rx_diff / time_diff
+        
+        self.last_rx_bytes = current_rx_bytes
+        self.last_rx_time = current_time
+        
+        return speed
 
     def minimize(self):
         self._window.minimize()
