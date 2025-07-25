@@ -10,6 +10,7 @@ class SteamDL:
         self.cache_domain = mode_string[domain_start:].split("@")[0]
         self.last_update_time = 0
         self.rx_bytes = 0
+        self.connections = []
         try:
             if os.path.isfile("rx.txt"):
                 with open("rx.txt", 'r') as rx_file:
@@ -26,6 +27,14 @@ class SteamDL:
     def responseheaders(self,flow):
         if 200 <= flow.response.status_code <= 299 and flow.request.headers.get("User-Agent") != "GamingServices":
             self.rx_bytes += int(flow.response.headers.get("Content-Length", 0))
+
+        # Log connection
+        client_ip = flow.client_conn.address[0]
+        if client_ip not in self.connections:
+            self.connections.append(client_ip)
+            with open("connections.log", "a") as conn_file:
+                conn_file.write(client_ip + '\n')
+
 
         current_time = time()
         if current_time - self.last_update_time > 2:
